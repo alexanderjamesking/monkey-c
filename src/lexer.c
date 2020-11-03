@@ -3,29 +3,30 @@
 #include <stdlib.h>
 #include <string.h>
 
-void read_char(Lexer *l) {
-  if (l->readPosition >= (int)strlen(l->input)) {
+void read_char(lexer *l) {
+  if (l->read_position >= (int)strlen(l->input)) {
     l->ch = 0;
   } else {
-    l->ch = l->input[l->readPosition];
+    l->ch = l->input[l->read_position];
   }
 
-  l->position = l->readPosition;
-  l->readPosition += 1;
+  l->position = l->read_position;
+  l->read_position += 1;
 }
 
-Lexer *new_lexer(char *input) {
-  Lexer *l = malloc(sizeof(Lexer));
+lexer *new_lexer(char *input) {
+  lexer *l = malloc(sizeof(lexer));
   l->input = input;
-  // important to initialize this otherwise it will randomly blow up
-  l->readPosition = 0;
+  l->position = 0;
+  l->read_position = 0;
+  l->ch = 0;
   read_char(l);
   return l;
 }
 
-Token *new_token(TokenType tokenType, char *ch) {
-  Token *t = malloc(sizeof(Token));
-  t->type = tokenType;
+token *new_token(token_type type, char *ch) {
+  token *t = malloc(sizeof(token));
+  t->type = type;
   t->literal = ch;
   return t;
 }
@@ -36,7 +37,7 @@ bool is_letter(unsigned char ch) {
 
 bool is_digit(unsigned char ch) { return '0' <= ch && ch <= '9'; }
 
-char *read_identifier(Lexer *l) {
+char *read_identifier(lexer *l) {
   int start = l->position;
 
   while (is_letter(l->ch)) {
@@ -52,7 +53,7 @@ char *read_identifier(Lexer *l) {
   return identifier;
 }
 
-char *read_number(Lexer *l) {
+char *read_number(lexer *l) {
   int start = l->position;
 
   while (is_digit(l->ch)) {
@@ -65,14 +66,14 @@ char *read_number(Lexer *l) {
   return number;
 }
 
-void skip_whitespace(Lexer *l) {
+void skip_whitespace(lexer *l) {
   while (l->ch == ' ' || l->ch == '\t' || l->ch == '\n' || l->ch == '\r') {
     read_char(l);
   }
 }
 
-Token *next_token(Lexer *l) {
-  Token *token;
+token *next_token(lexer *l) {
+  token *t;
 
   skip_whitespace(l);
 
@@ -82,39 +83,39 @@ Token *next_token(Lexer *l) {
 
   switch (l->ch) {
   case '=':
-    token = new_token(ASSIGN, ch);
+    t = new_token(ASSIGN, ch);
     break;
 
   case ';':
-    token = new_token(SEMICOLON, ch);
+    t = new_token(SEMICOLON, ch);
     break;
 
   case '(':
-    token = new_token(LPAREN, ch);
+    t = new_token(LPAREN, ch);
     break;
 
   case ')':
-    token = new_token(RPAREN, ch);
+    t = new_token(RPAREN, ch);
     break;
 
   case ',':
-    token = new_token(COMMA, ch);
+    t = new_token(COMMA, ch);
     break;
 
   case '+':
-    token = new_token(PLUS, ch);
+    t = new_token(PLUS, ch);
     break;
 
   case '{':
-    token = new_token(LBRACE, ch);
+    t = new_token(LBRACE, ch);
     break;
 
   case '}':
-    token = new_token(RBRACE, ch);
+    t = new_token(RBRACE, ch);
     break;
 
   case 0:
-    token = new_token(END_OF_FILE, "");
+    t = new_token(END_OF_FILE, "");
     break;
 
   default:
@@ -125,10 +126,10 @@ Token *next_token(Lexer *l) {
       char *num = read_number(l);
       return new_token(INT, num);
     } else {
-      token = new_token(ILLEGAL, ch);
+      t = new_token(ILLEGAL, ch);
     }
   }
 
   read_char(l);
-  return token;
+  return t;
 }

@@ -21,13 +21,13 @@ Test(lexer, lexer_hello_test) {
   // v 118
   // e 101
 
-  Lexer *l = new_lexer(input);
-  Token *first = next_token(l);
+  lexer *l = new_lexer(input);
+  token *first = next_token(l);
 
   cr_assert_eq(first->type, LET);
   cr_assert_str_eq(first->literal, "let");
 
-  Token *second = next_token(l);
+  token *second = next_token(l);
   cr_assert_eq(second->type, IDENT);
   cr_assert_str_eq(second->literal, "five");
 

@@ -1,15 +1,15 @@
 #include "token.h"
 #include <stdbool.h>
 
-typedef struct Lexer {
+typedef struct lexer {
   char *input;
   int position;
-  int readPosition;
+  int read_position;
   unsigned char ch; // current char
-} Lexer;
+} lexer;
 
 bool is_letter(unsigned char ch);
 
-Lexer *new_lexer(char *input);
+lexer *new_lexer(char *input);
 
-Token *next_token(Lexer *l);
+token *next_token(lexer *l);

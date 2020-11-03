@@ -24,11 +24,11 @@ typedef enum {
   // keywords
   FUNCTION,
   LET
-} TokenType;
+} token_type;
 
-typedef struct Token {
-  TokenType type;
+typedef struct token {
+  token_type type;
   char *literal;
-} Token;
+} token;
 
-TokenType lookup_ident(char *ident);
+token_type lookup_ident(char *ident);

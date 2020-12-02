@@ -1,0 +1,13 @@
+n: [push]
+
+jobs:
+  test_job:
+    runs-on: ubuntu-latest
+    name: Run unit tests
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Test
+      id: test
+      uses: ./
+
